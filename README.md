@@ -44,7 +44,7 @@ SaveX is a Flutter-based mobile application designed to help users track their d
 3. Ensure your Flask server is running at the configured IP.
 4. Run `flutter run`.
 
-# SaveX - Professional Expense Tracker 📱💰
+# SaveX - Professional Expense Tracker 
 
 SaveX is a professional-grade Flutter application designed to help users take control of their financial life. It combines real-time spending analytics with a secure Flask backend and MongoDB database.
 
@@ -60,7 +60,7 @@ The app uses **MongoDB** to store expenses and user data.
 * Open `backendFiles/app.py` and replace the `MONGO_URI` with your own:
   
 # Replace YOUR_USERNAME and YOUR_PASSWORD with your credentials
-MONGO_URI = "mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@your-cluster.mongodb.net/"
+MONGO_URI = "mongodb+srv://YOUR_USERNAME: YOUR_PASSWORD @your-cluster.mongodb.net/"
 
 ### 2. Backend Setup (Flask Server)
 Navigate to the `backendFiles` folder in your terminal.
@@ -75,4 +75,4 @@ python app.py
 * Configure URL: A hidden configuration field will appear. Enter your backend URL:
 Example: http://192.168.1.XX:5000
 ![Terminal](Screenshots/terminal.png)
-* Save: Tap Save. The app is now connected to your own local server!
+* Save & Enjoy: Tap Save. The app will now communicate with your own server and database!
