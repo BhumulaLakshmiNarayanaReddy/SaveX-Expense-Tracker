@@ -26,7 +26,7 @@ SaveX is a Flutter-based mobile application designed to help users track their d
     <td><img src="Screenshots/dashboard.png" width="180"></td>
     <td><img src="Screenshots/fixedAmounts.png" width="180"></td>
     <td><img src="Screenshots/scanner.png" width="180"></td>
-    <td><img src="Screenshots/Graph.png" width="180"></td>
+    <td><img src="Screenshots/graph.png" width="180"></td>
     <td><img src="Screenshots/profile.png" width="180"></td>
   </tr>
 </table>
