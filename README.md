@@ -44,7 +44,13 @@ SaveX is a Flutter-based mobile application designed to help users track their d
 3. Ensure your Flask server is running at the configured IP.
 4. Run `flutter run`.
 
-## 📥 Installation & Setup Guide
+# SaveX - Professional Expense Tracker 📱💰
+
+SaveX is a professional-grade Flutter application designed to help users take control of their financial life. It combines real-time spending analytics with a secure Flask backend and MongoDB database.
+
+[![Download APK](https://img.shields.io/badge/Download-APK-green?style=for-the-badge&logo=android)](https://github.com/BhumulaLakshmiNarayanaReddy/SaveX-Expense-Tracker/releases/download/v1.0.0/SaveX.apk)
+
+## 📥Setup Guide
 Since this is a personal project, the main server is not hosted 24/7. To run the app and test its full functionality, please follow these steps:
 
 ### 1. Database Setup (MongoDB)
@@ -52,7 +58,21 @@ The app uses **MongoDB** to store expenses and user data.
 * Create a free account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
 * Create a Cluster and get your **Connection String (URI)**.
 * Open `backendFiles/app.py` and replace the `MONGO_URI` with your own:
-
-```python
+  
 # Replace YOUR_USERNAME and YOUR_PASSWORD with your credentials
 MONGO_URI = "mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@your-cluster.mongodb.net/"
+
+### 2. Backend Setup (Flask Server)
+Navigate to the `backendFiles` folder in your terminal.
+* Install dependencies:
+pip install -r requirements.txt
+* Start the server: 
+python app.py
+
+### 3. Mobile App Connection (Hidden Menu)
+* Download and install the SaveX APK by clicking the above download button.
+* The 7-Tap Secret: Open the app, go to the Profile page, and tap the Wallet Icon 7 times quickly.
+* Configure URL: A hidden configuration field will appear. Enter your backend URL:
+Example: http://192.168.1.XX:5000
+![Terminal](Screenshots/terminal.png)
+* Save: Tap Save. The app is now connected to your own local server!
