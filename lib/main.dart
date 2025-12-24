@@ -10,7 +10,6 @@ import 'dart:ui' as ui;
 import 'authentication.dart';
 
 
-// 2. Update your main function to be async
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +19,7 @@ void main() async {
 
     final appState = AppState();
     
-    // Use a try-catch here so a server error doesn't kill the app
+    // Load saved URL and user data if email exists
     try {
       await appState.loadSavedUrl();
       if (savedEmail != null && savedEmail.isNotEmpty) {
@@ -42,7 +41,7 @@ void main() async {
   }
 }
 
-// 3. Update SaveXApp to use the 'isLoggedIn' flag
+
 class SaveXApp extends StatelessWidget {
   final bool isLoggedIn;
   const SaveXApp({super.key, required this.isLoggedIn});
@@ -52,7 +51,6 @@ class SaveXApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.purple),
-      // THE FIX: If logged in, go to Dashboard. If not, go to Login landing page.
       home: isLoggedIn ? const MainNavigation() : const AuthLandingPage(),
     );
   }
@@ -92,16 +90,15 @@ class AppState extends ChangeNotifier {
   };
 
   List<String> notifications = ["Welcome to SaveX!"];
-  // NEW METHOD: Called by authentication.dart after successful OTP
   void setAuthenticatedUser(String email) {
       userEmail = email;
-      loadUserData(); // Now fetch actual data for THIS user
+      loadUserData(); 
   }
 
   Future<void> updateServerUrl(String newUrl) async {
       serverUrl = newUrl;
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('custom_url', newUrl); // Save URL permanently
+      await prefs.setString('custom_url', newUrl); 
       notifyListeners();
     }
     Future<void> loadSavedUrl() async {
@@ -125,10 +122,10 @@ class AppState extends ChangeNotifier {
               var data = jsonDecode(response.body);
               currentBalance = (data['currentBalance'] ?? 0.0).toDouble();
               userName = data['name'] ?? "User";
-              userPin = data['pin'] ?? "0000"; // Load the actual PIN from DB
+              userPin = data['pin'] ?? "0000"; 
               budgetReminder = (data['budgetReminder'] ?? 0.0).toDouble();
         
-        // Clear local lists to prevent duplicates
+  
         categoryData.forEach((key, value) => value.clear());
 
         List txsFromDb = data['transactions'] ?? [];
@@ -198,26 +195,23 @@ class AppState extends ChangeNotifier {
       body: jsonEncode({"old_email": oldEmail, "name": name, "email": email}),
     );
   }
-  // NEW: Save email to local storage
 Future<void> saveSession(String email) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user_email', email); // Saves to permanent storage
+    await prefs.setString('user_email', email); 
     userEmail = email;
     await loadUserData();
     notifyListeners();
   }
 
-  // Call this when the user clicks Logout
   Future<void> clearSession() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_email'); // Deletes from permanent storage
+    await prefs.remove('user_email'); 
     userEmail = "";
     userName = "";
     currentBalance = 0.0;
     notifyListeners();
   }
 
-  // UPDATED: Check if user is already logged in
   Future<String?> getSavedSession() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('user_email');
@@ -317,7 +311,6 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications_none_rounded, color: Colors.white, size: 30),
             onPressed: () {
-              // THIS IS THE LINK TO THE CODE I GAVE YOU ABOVE
               Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationPage()));
             },
           ),
@@ -409,7 +402,7 @@ class _CategoryActionSheetState extends State<CategoryActionSheet> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: const BoxDecoration(
-      color: Color.fromARGB(255, 255, 255, 255), // <--- This makes the window solid white
+      color: Color.fromARGB(255, 255, 255, 255), 
       borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -430,7 +423,6 @@ class _CategoryActionSheetState extends State<CategoryActionSheet> {
               decoration: const InputDecoration(border: InputBorder.none),
             )),
           ]),
-          // Update the build method inside _CategoryActionSheetState
           if (["Loan", "EMI", "Autopay", "Fixed Others", "Others"].contains(widget.category))
             Padding(
               padding: const EdgeInsets.only(top: 15),
@@ -444,7 +436,6 @@ class _CategoryActionSheetState extends State<CategoryActionSheet> {
                 ),
               ),
             ),
-          // Removed 2000 button
           Wrap(spacing: 10, children: [50, 100, 200, 500, 1000].map((v) => ActionChip(
             label: Text("₹$v"), onPressed: () => setState(() => _amt.text = v.toString()),
           )).toList()),
@@ -546,24 +537,23 @@ class FixedAmountsPage extends StatelessWidget {
           ],
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // Vertically center the content
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // This creates the white background "Aura" around the icon
             Container(
-              height: 60, // Size of the white circle
+              height: 60, 
               width: 60,
               decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 255, 255, 255), // The white background
+                color: Color.fromARGB(255, 255, 255, 255), 
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                color: color, // The icon takes the color of the button
-                size: 35,    // Size of the symbol inside
+                color: color, 
+                size: 35,   
               ),
             ),
             
-            const SizedBox(height: 12), // Space between circle and text
+            const SizedBox(height: 12), 
             
             Text(
               label,
@@ -595,10 +585,8 @@ class _QRScanPageState extends State<QRScanPage> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    // Start the camera
     controller.start();
     
-    // Setup the scanning line animation (2 seconds to slide down)
     _animController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -618,17 +606,15 @@ class _QRScanPageState extends State<QRScanPage> with SingleTickerProviderStateM
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // 1. The Camera View
           MobileScanner(
             controller: controller, 
           onDetect: (capture) {
             if (!mounted) return;
-            controller.stop(); // Stop scanning once a code is found
+            controller.stop(); 
             Navigator.push(context, MaterialPageRoute(builder: (c) => const FullPayPage(merchant: "Merchant Store")))
-              .then((value) => controller.start()); // Restart scanning when you come back
+              .then((value) => controller.start()); 
           }
           ),
-          // 2. The Animated Overlay (Dark background, Corners, and Scanning Line)
           AnimatedBuilder(
             animation: _animController,
             builder: (context, child) {
@@ -640,7 +626,6 @@ class _QRScanPageState extends State<QRScanPage> with SingleTickerProviderStateM
             },
           ),
 
-          // 3. Instruction Text
           const Positioned(
             top: 100, left: 0, right: 0,
             child: Text(
@@ -649,13 +634,11 @@ class _QRScanPageState extends State<QRScanPage> with SingleTickerProviderStateM
               style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
             ),
           ),
-          // 4. Bottom Controls (Flash, Manual Capture, and Gallery)
           Positioned(
             bottom: 60, left: 0, right: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Flash Button
                 CircleAvatar(
                   backgroundColor: Colors.white24, 
                   child: IconButton(
@@ -664,7 +647,6 @@ class _QRScanPageState extends State<QRScanPage> with SingleTickerProviderStateM
                   )
                 ),
 
-                // --- THE MISSING CIRCLE BUTTON ---
                 GestureDetector(
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const FullPayPage(merchant: "Merchant Store"))),
                   child: Container(
@@ -672,14 +654,13 @@ class _QRScanPageState extends State<QRScanPage> with SingleTickerProviderStateM
                     height: 75, 
                     decoration: BoxDecoration(
                       shape: BoxShape.circle, 
-                      border: Border.all(color: Colors.white, width: 5), // Thick white border
-                      color: Colors.white24, // See-through white middle
+                      border: Border.all(color: Colors.white, width: 5),
+                      color: Colors.white24, 
                     ),
-                    child: const Icon(Icons.qr_code, color: Colors.white, size: 30), // Added a small icon inside for style
+                    child: const Icon(Icons.qr_code, color: Colors.white, size: 30), 
                   ),
                 ),
 
-                // Gallery Button
                 CircleAvatar(
                   backgroundColor: Colors.white24,
                   child: IconButton(
@@ -717,7 +698,6 @@ class ScannerOverlayPainter extends CustomPainter {
       height: scanBoxSize,
     );
 
-    // 1. Draw Dark Blurred Overlay
     final backgroundPaint = Paint()..color = Colors.black.withOpacity(0.65);
     canvas.drawPath(
       Path.combine(
@@ -728,7 +708,6 @@ class ScannerOverlayPainter extends CustomPainter {
       backgroundPaint,
     );
 
-    // 2. Draw Perfectly Aligned White Corner Arcs
     final cornerPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
@@ -736,22 +715,22 @@ class ScannerOverlayPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final Path path = Path();
-    // Top Left
+
     path.moveTo(scanRect.left, scanRect.top + cornerLen);
     path.lineTo(scanRect.left, scanRect.top + borderRadius);
     path.arcToPoint(Offset(scanRect.left + borderRadius, scanRect.top), radius: Radius.circular(borderRadius));
     path.lineTo(scanRect.left + cornerLen, scanRect.top);
-    // Top Right
+
     path.moveTo(scanRect.right - cornerLen, scanRect.top);
     path.lineTo(scanRect.right - borderRadius, scanRect.top);
     path.arcToPoint(Offset(scanRect.right, scanRect.top + borderRadius), radius: Radius.circular(borderRadius));
     path.lineTo(scanRect.right, scanRect.top + cornerLen);
-    // Bottom Right
+
     path.moveTo(scanRect.right, scanRect.bottom - cornerLen);
     path.lineTo(scanRect.right, scanRect.bottom - borderRadius);
     path.arcToPoint(Offset(scanRect.right - borderRadius, scanRect.bottom), radius: Radius.circular(borderRadius));
     path.lineTo(scanRect.right - cornerLen, scanRect.bottom);
-    // Bottom Left
+
     path.moveTo(scanRect.left + cornerLen, scanRect.bottom);
     path.lineTo(scanRect.left + borderRadius, scanRect.bottom);
     path.arcToPoint(Offset(scanRect.left, scanRect.bottom - borderRadius), radius: Radius.circular(borderRadius));
@@ -759,7 +738,7 @@ class ScannerOverlayPainter extends CustomPainter {
 
     canvas.drawPath(path, cornerPaint);
 
-    // 3. Draw the Scanning Line (Purple Laser)
+
     double lineY = scanRect.top + (scanRect.height * scanPosition);
     final laserPaint = Paint()
       ..shader = LinearGradient(
@@ -768,7 +747,7 @@ class ScannerOverlayPainter extends CustomPainter {
 
     canvas.drawRect(Rect.fromLTWH(scanRect.left + 15, lineY, scanRect.width - 30, 2.5), laserPaint);
     
-    // Add glow to the laser
+
     canvas.drawRect(
       Rect.fromLTWH(scanRect.left + 15, lineY - 1, scanRect.width - 30, 4),
       Paint()..color = Colors.purple.withOpacity(0.3)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
@@ -850,12 +829,10 @@ class MetricsPage extends StatefulWidget {
 }
 
 class _MetricsPageState extends State<MetricsPage> {
-  // 1. Initialize the controller here
   final TextEditingController reminderController = TextEditingController();
 
   @override
   void dispose() {
-    // 2. Clean up the controller when the widget is destroyed
     reminderController.dispose();
     super.dispose();
   }
@@ -878,7 +855,7 @@ class _MetricsPageState extends State<MetricsPage> {
             children: [
                 // 1. CHART SECTION
               Container(
-                height: 250, // Fixed height for stability
+                height: 250, 
                 margin: const EdgeInsets.symmetric(vertical: 20),
                 padding: const EdgeInsets.only(right: 20, top: 10), 
                 decoration: BoxDecoration(
@@ -888,7 +865,6 @@ class _MetricsPageState extends State<MetricsPage> {
                 ),
                 child: Row(
                   children: [
-                    // 1. Fixed Y-Axis for Money (₹)
                     SizedBox(
                       width: 50,
                       child: CustomPaint(
@@ -896,7 +872,6 @@ class _MetricsPageState extends State<MetricsPage> {
                         painter: YAxisPainter(context.watch<AppState>()),
                       ),
                     ),
-                    // 2. The Line Graph
                     Expanded(
                       child: CustomPaint(
                         size: Size.infinite,
@@ -910,8 +885,7 @@ class _MetricsPageState extends State<MetricsPage> {
               const Text("History shows spending trends over the last 5 days.", 
                 style: TextStyle(color: Colors.grey)),
               const SizedBox(height: 25),
-
-// 2. MONTHLY BUDGET REMINDER SECTION
+              // 2. MONTHLY BUDGET REMINDER SECTION
               Container(
                 padding: const EdgeInsets.all(25),
                 decoration: BoxDecoration(
@@ -990,9 +964,6 @@ class _MetricsPageState extends State<MetricsPage> {
                         ),
                       ],
                     ),
-
-                    // --- NEW SECTION ADDED BELOW ---
-                    // This checks if a budget is set and displays it at the bottom
                     if (context.watch<AppState>().budgetReminder > 0) ...[
                       const SizedBox(height: 20),
                       const Divider(color: Colors.orange, thickness: 0.5),
@@ -1013,7 +984,6 @@ class _MetricsPageState extends State<MetricsPage> {
                         ],
                       ),
                     ],
-                    // ------------------------------
                   ],
                 ),
               ),
@@ -1032,11 +1002,10 @@ class NotificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // This pulls the notifications from your AppState
     final notes = context.watch<AppState>().notifications;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F2EF), // LinkedIn light grey background
+      backgroundColor: const Color(0xFFF3F2EF), 
       appBar: AppBar(
         leading: const BackButton(color: Colors.black),
         title: const Text("Notifications", 
@@ -1051,12 +1020,11 @@ class NotificationPage extends StatelessWidget {
             separatorBuilder: (context, index) => const Divider(height: 1, thickness: 1, color: Color(0xFFEBEBEB)),
             itemBuilder: (context, index) {
               return Container(
-                color: Colors.white, // Each notification has a white card feel
+                color: Colors.white, 
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Notification Icon / Avatar
                     const CircleAvatar(
                       radius: 28,
                       backgroundColor: Colors.purple,
@@ -1064,7 +1032,6 @@ class NotificationPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     
-                    // Notification Content
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1087,8 +1054,6 @@ class NotificationPage extends StatelessWidget {
                         ],
                       ),
                     ),
-
-                    // "More" icon like LinkedIn
                     const Icon(Icons.more_horiz, color: Colors.grey, size: 20),
                   ],
                 ),
@@ -1105,7 +1070,6 @@ class DynamicChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Leave space at the bottom for X-axis labels
     double bottomPadding = 30.0;
     double chartHeight = size.height - bottomPadding;
     
@@ -1117,8 +1081,6 @@ class DynamicChartPainter extends CustomPainter {
 
     final dotPaint = Paint()..color = Colors.purple;
     final textPainter = TextPainter(textDirection: ui.TextDirection.ltr);
-
-    // 1. Get Data: 4 days ago -> Today (Right side)
     List<double> values = [];
     List<String> labels = [];
     for (int i = 4; i >= 0; i--) {
@@ -1129,8 +1091,6 @@ class DynamicChartPainter extends CustomPainter {
       else if (i == 1) labels.add("Yesterday");
       else labels.add(DateFormat('MM/dd').format(d));
     }
-
-    // 2. Dynamic Scaling
     double maxVal = values.fold(0, (p, c) => p > c ? p : c);
     if (maxVal < 500) maxVal = 500;
 
@@ -1139,26 +1099,18 @@ class DynamicChartPainter extends CustomPainter {
 
     for (int i = 0; i < values.length; i++) {
       double x = i * widthPerStep;
-      // Calculate Y based on chartHeight (leaving room for text)
       double y = chartHeight - (values[i] / maxVal * chartHeight);
 
       if (i == 0) path.moveTo(x, y);
       else path.lineTo(x, y);
-
-      // Draw the Point
       canvas.drawCircle(Offset(x, y), 5, Paint()..color = Colors.white);
       canvas.drawCircle(Offset(x, y), 3, dotPaint);
-
-      // 3. Draw X-Axis Labels (Today, Y'day, etc.)
       textPainter.text = TextSpan(
         text: labels[i],
         style: const TextStyle(color: Colors.black54, fontSize: 10, fontWeight: FontWeight.bold),
       );
       textPainter.layout();
-      
-      // Center the text under the dot
       double xOffset = x - (textPainter.width / 2);
-      // If it's the last label (Today), nudge it left so it doesn't cut off
       if (i == values.length - 1) xOffset = x - textPainter.width;
       if (i == 0) xOffset = x;
 
@@ -1187,8 +1139,6 @@ class YAxisPainter extends CustomPainter {
       if (v > maxVal) maxVal = v;
     }
     if (maxVal < 500) maxVal = 500;
-
-    // Draw 5 levels of money labels
     for (int i = 0; i <= 4; i++) {
       double y = chartHeight - (i * chartHeight / 4);
       textPainter.text = TextSpan(
@@ -1291,12 +1241,11 @@ class ProfilePage extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 55), backgroundColor: Colors.purple, foregroundColor: Colors.white),
               onPressed: () {
-                double? val = double.tryParse(addAmt.text); // Safe parsing
+                double? val = double.tryParse(addAmt.text); 
                 if (val != null) {
                   context.read<AppState>().addMoney(val);
                   Navigator.pop(c);
                 } else {
-                  // Optional: show error message
                 }
               },
               child: const Text("Add Amount to Bank", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -1337,23 +1286,16 @@ class ProfilePage extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              // 1. CLEAR HISTORY
               _tile(Icons.delete, "Clear History", Colors.red, onTap: () {
                 context.read<AppState>().clearHistory();
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("All transaction history erased.")));
               }),
-
-              // 2. STATEMENTS (Replaced Settings)
               _tile(Icons.receipt_long, "Statements", Colors.blue, onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (c) => const StatementsPage()));
               }),
-
-              // 3. BALANCES (Large Window + Add Money)
               _tile(Icons.account_balance_wallet, "Balances", Colors.green, onTap: () {
                 _showLargeBalanceWindow(context);
               }),
-
-              // 4. INFO US (Detailed Window)
               _tile(Icons.info, "Info Us", Colors.purple, onTap: () {
                 showAboutDialog(
                   context: context,
@@ -1393,7 +1335,7 @@ Widget _tile(IconData i, String t, Color color, {VoidCallback? onTap}) {
     ),
     title: Text(t, style: const TextStyle(fontWeight: FontWeight.w500)),
     trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-    onTap: onTap, // Now the tile can be clicked
+    onTap: onTap, 
   );
 }
 }

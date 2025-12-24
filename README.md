@@ -1,16 +1,27 @@
-# savex
+# SaveX - Professional Expense Tracker
 
-A new Flutter project.
+SaveX is a Flutter-based mobile application designed to help users track their daily spending with professional analytics and budget reminders.
 
-## Getting Started
+## Features
+* **Spending Analytics:** A dynamic line chart showing the last 5 days of activity.
+* **Budget Reminders:** Set a monthly limit and get notified of your status.
+* **Authentication:** Secure login and OTP verification.
+* **Category Tracking:** Organize spending into Groceries, Food, Shopping, and more.
 
-This project is a starting point for a Flutter application.
+## 📸 Screenshots
 
-A few resources to get you started if this is your first Flutter project:
+| Dashboard | Spending Analytics |
+|-----------|--------------------|
+| ![Dashboard](screenshots/dashboard.png) | ![Graph](screenshots/graph.png) |
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🛠️ Tech Stack
+* **Frontend:** Flutter & Dart
+* **Backend:** Flask (Python)
+* **Database:** mongodb
+* **State Management:** Provider
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🏁 How to Run
+1. Clone the repository.
+2. Run `flutter pub get`.
+3. Ensure your Flask server is running at the configured IP.
+4. Run `flutter run`.

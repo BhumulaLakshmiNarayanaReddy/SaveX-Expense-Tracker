@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-// Import your main.dart to access AppState and the Dashboard
 import 'main.dart'; 
 
 // --- SHARED UI COMPONENTS ---
@@ -55,7 +54,7 @@ class AuthLandingPage extends StatefulWidget {
 }
 
 class _AuthLandingPageState extends State<AuthLandingPage> {
-  int _tapCount = 0; // To track the 7 taps
+  int _tapCount = 0; 
 
   void _handleSecretTaps() {
     setState(() {
@@ -63,19 +62,18 @@ class _AuthLandingPageState extends State<AuthLandingPage> {
     });
 
     if (_tapCount >= 7) {
-      _tapCount = 0; // Reset count
+      _tapCount = 0; 
       _showUrlDialog();
     }
   }
 
   void _showUrlDialog() {
-    // Get current URL from AppState
     final appState = context.read<AppState>();
     final controller = TextEditingController(text: appState.serverUrl);
 
     showDialog(
       context: context,
-      barrierDismissible: false, // Must click a button to close
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: const Row(
           children: [
@@ -111,7 +109,6 @@ class _AuthLandingPageState extends State<AuthLandingPage> {
             onPressed: () async {
               String newUrl = controller.text.trim();
               if (newUrl.isNotEmpty) {
-                // Save the new URL to AppState and local storage
                 await appState.updateServerUrl(newUrl);
                 if (!mounted) return;
                 Navigator.pop(context);
@@ -155,17 +152,17 @@ class _AuthLandingPageState extends State<AuthLandingPage> {
             ),
           ),
 
-          // 2. THE HIDDEN TRIGGER ICON (Top Left)
+          // 2. THE HIDDEN TRIGGER ICON 
           Positioned(
             top: 50,
             left: 20,
             child: GestureDetector(
               onTap: _handleSecretTaps,
               child: Opacity(
-                opacity: 0.2, // Very faint so people don't notice it
+                opacity: 0.2, 
                 child: Container(
                   padding: const EdgeInsets.all(10),
-                  color: Colors.transparent, // Makes the tap area larger
+                  color: Colors.transparent,
                   child: const Icon(Icons.account_balance_wallet_outlined, size: 25, color: Colors.purple),
                 ),
               ),
@@ -340,12 +337,9 @@ class _OtpVerifyPageState extends State<OtpVerifyPage> {
             "currentBalance": widget.signupData!['balance'],
           }));
       }
-      
-      // Update AppState with the logged-in email and fetch data
       await state.saveSession(widget.email);
       
       if (!mounted) return;
-      // Navigate to the dashboard and clear the auth stack
       Navigator.pushAndRemoveUntil(
         context, 
         MaterialPageRoute(builder: (c) => const MainNavigation()), 
