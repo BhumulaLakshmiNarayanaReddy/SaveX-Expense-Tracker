@@ -58,8 +58,7 @@ The app uses **MongoDB** to store expenses and user data.
 * Create a free account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
 * Create a Cluster and get your **Connection String (URI)**.
 * Open `backendFiles/app.py` and replace the `MONGO_URI` with your own:
-  
-# Replace YOUR_USERNAME and YOUR_PASSWORD with your credentials
+* Replace YOUR_USERNAME and YOUR_PASSWORD with your credentials
 MONGO_URI = "mongodb+srv://YOUR_USERNAME: YOUR_PASSWORD @your-cluster.mongodb.net/"
 
 ### 2. Backend Setup (Flask Server)
