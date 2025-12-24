@@ -18,7 +18,7 @@ SENDER_EMAIL = "Savex.financial@gmail.com"
 SENDER_PASSWORD = "bqax zujz crda iifg" 
 
 # MongoDB Connection
-MONGO_URI = "mongodb+srv://24pa1aXXXX:XXXXXXXXXX@cluster0.ntubqk0.mongodb.net/?appName=Cluster0"
+MONGO_URI = "mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@your-cluster.mongodb.net/"
 client = MongoClient(MONGO_URI)
 db = client['SaveX_Database']
 users_collection = db['users']
